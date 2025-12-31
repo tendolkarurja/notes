@@ -1,17 +1,13 @@
 import User from "../models/user.js";
-
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 export const userLogin = async(req, res) => {
     const key = process.env.SECRET_KEY;
 
-    if(!key){
-        throw new Error({message:Error.message});
-    }
     try{
         const {email, password} = req.body;
-        const account = await User.findOne({email}).select('+password');
+        const account = await User.findOne({email}).select('+password'); // did this because schema has password select = false, so to compensate for that.
 
         if (!account){
             res.status(404).json({'message':'No such user found'});

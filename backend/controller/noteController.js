@@ -1,7 +1,7 @@
 import Note from "../models/note.js"
 export const viewNotes = async(req, res) =>{
     try{
-        const uID = req.params.id;
+        const uID = req.user.userId;
         const notes = await Note.find({owner:uID});    
         res.json(notes);
     }    
@@ -13,9 +13,10 @@ export const viewNotes = async(req, res) =>{
 
 export const createNote = async(req, res) => {
     try{
-        const note = await Note.create(
-            req.body
-        );
+        const note = await Note.create({
+            ...req.body,
+            owner: req.user.userId
+        });
 
         res.status(201).json({message: 'Note created', note});
     }
@@ -43,7 +44,7 @@ export const deleteNote = async(req, res) => {
 
 export const viewPinnedNotes = async(req, res) => {
     try{
-        const uID = req.params.id;
+        const uID = req.user.userId;
 
         const notes = await Note.find({pinned : true, owner : uID});
         res.status(200).json({message: 'Pinned Notes', notes});
@@ -56,7 +57,7 @@ export const viewPinnedNotes = async(req, res) => {
 
 export const viewActiveNotes = async(req, res) => {
     try{
-        const uID = req.params.id;
+        const uID = req.user.userId;
 
         const notes = await Note.find({cur_status : "active", owner : uID});
         res.status(201).json({message: 'Active Notes', notes});
@@ -68,7 +69,7 @@ export const viewActiveNotes = async(req, res) => {
 
 export const updateNote = async(req,res) => {
     try{
-        const uID = req.params.userId;
+        const uID = req.user.userId;
         const nID = req.params.noteId;
         const updatedContent = req.body;
         const note = await Note.findOneAndUpdate({_id: nID, owner: uID}, {$set : updatedContent},{new: true });
