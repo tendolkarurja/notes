@@ -7,11 +7,6 @@ const User = new mongoose.Schema (
             required: true,
         },
 
-        uID:{
-            type: Number,
-            unique: true
-        },
-
         email: {
             type: String,
             required: true,
